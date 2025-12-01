@@ -4,22 +4,58 @@ import random
 
 WIDTH, HEIGHT = 400, 800
 
+def draw_wrapped_text(surface, text, font, color, x, y, max_width):
+    words = text.split(" ")
+    lines = []
+    current_line = ""
+
+    for word in words:
+        test_line = current_line + word + " "
+        test_surface = font.render(test_line, True, color)
+
+        if test_surface.get_width() > max_width:
+            lines.append(current_line)
+            current_line = word + " "
+        else:
+            current_line = test_line
+
+    lines.append(current_line)  # Add last line
+
+    for i, line in enumerate(lines):
+        line_surface = font.render(line, True, color)
+        surface.blit(line_surface, (x, y + i * (font.get_height() + 5)))
+
 
 def quiz(window, font):
-    question_lyst = ["demo 1 ? ", "demo 2 ?"]
-    answer_lyst = [0, 1]
+    question_lyst = [
+    "Sandy Hook is a barrier spit formed over thousands of years by longshore drift moving sand northward.",
+    "The Sandy Hook Lighthouse was originally built about 1.5 miles inland from the shoreline.",
+    "The Sandy Hook Lighthouse is the oldest operating lighthouse in the United States.",
+    "During the American Revolution, the Sandy Hook Lighthouse was successfully destroyed by enemy forces.",
+    "Fort Hancock played a major role in U.S. coastal defense, especially during World War I and the Cold War.",
+    "Gunnison Beach is the only legal nude beach in New Jersey because it’s on federal land.",
+    "Sandy Hook officially opened its public beaches in the 1970s after the National Park Service took over the land.",
+    "There are officially ten designated beaches at Sandy Hook according to the National Park Service.",
+    "Hurricane Sandy caused only minor damage to Sandy Hook and the park reopened within a few weeks.",
+    "Parts of Sandy Hook still contain abandoned military structures like missile sites, gun batteries, and underground tunnels."
+]
+
+    answer_lyst = [1, 0, 1, 0, 1, 1, 1, 0, 0, 1]
+
     random_ques = random.randint(0, 1)
     question = question_lyst[random_ques]
     answer = answer_lyst[random_ques]
     question_surface = font.render(f"{question}", True, (255, 255, 255))
     pause = True
     cont = False
-    yes_rect = pygame.Rect(60, 400, 100, 50)
-    no_rect = pygame.Rect(200, 400, 100, 50)
+    yes_rect = pygame.Rect(60, 600, 100, 50)
+    no_rect = pygame.Rect(200, 600, 100, 50)
 
     while pause:
         pygame.display.update()
-        window.blit(question_surface, (60, 300))
+        # window.blit(question_surface, (60, 300))
+        draw_wrapped_text(window, question, font, (255,255,255), 20, 300, 360)  # 360 width so it fits inside 400 window
+
         pygame.draw.rect(window, "green", yes_rect)
         pygame.draw.rect(window, "red", no_rect)
 
